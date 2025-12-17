@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\pendapatanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\userViewController;
 /*
@@ -32,13 +33,18 @@ Route::middleware('jwt.session')->group(function () {
         // Route::get('/pengeluaran', [PengeluaranController::class, 'index'])->name('pengeluaran');
         // Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
         Route::get('/akun', [AkunController::class, 'index'])->name('akun');
-
         Route::get('/akun/tambah', [AkunController::class, 'create']);
         Route::post('/akun', [AkunController::class, 'store']);
-
         Route::get('/akun/{id}/edit', [AkunController::class, 'edit']);
         Route::put('/akun/{id}', [AkunController::class, 'update']);
-
         Route::delete('/akun/{id}', [AkunController::class, 'destroy']);
+
+
+        Route::get('/pendapatan', [pendapatanController::class, 'index'])->name('pendapatan');
+        Route::get('/pendapatan/tambah', [pendapatanController::class, 'create'])->name('pendapatan.create');
+        Route::post('/pendapatan', [pendapatanController::class, 'store'])->name('pendapatan.store');
+        Route::get('/pendapatan/{id}/edit', [pendapatanController::class, 'edit'])->name('pendapatan.edit');
+        Route::put('/pendapatan/{id}', [pendapatanController::class, 'update'])->name('pendapatan.update');
+        Route::delete('/pendapatan/{id}', [pendapatanController::class, 'destroy'])->name('pendapatan.destroy');
     });
 });

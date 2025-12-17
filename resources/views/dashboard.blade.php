@@ -11,7 +11,7 @@
 <body>
     <nav style="margin-bottom:20px;">
         <a href="#">Dashboard</a> <br>
-        <a href="#">Pendapatan</a><br>
+        <a href="{{ route('pendapatan') }}">Pendapatan</a><br>
         <a href="#">Pengeluaran</a><br>
         <a href="#">Laporan</a><br>
         <a href="{{ route('akun') }}">Akun</a>
