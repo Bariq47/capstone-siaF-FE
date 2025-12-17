@@ -3,6 +3,7 @@
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\pendapatanController;
+use App\Http\Controllers\pengeluaranController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\userViewController;
 /*
@@ -46,5 +47,13 @@ Route::middleware('jwt.session')->group(function () {
         Route::get('/pendapatan/{id}/edit', [pendapatanController::class, 'edit'])->name('pendapatan.edit');
         Route::put('/pendapatan/{id}', [pendapatanController::class, 'update'])->name('pendapatan.update');
         Route::delete('/pendapatan/{id}', [pendapatanController::class, 'destroy'])->name('pendapatan.destroy');
+
+        Route::get('/pengeluaran', [pengeluaranController::class, 'index'])->name('pengeluaran');
+        Route::get('/pengeluaran/tambah', [pengeluaranController::class, 'create'])->name('pengeluaran.create');
+        Route::post('/pengeluaran', [pengeluaranController::class, 'store'])->name('pengeluaran.store');
+        Route::get('/pengeluaran/{id}/edit', [pengeluaranController::class, 'edit'])->name('pengeluaran.edit');
+        Route::put('/pengeluaran/{id}', [pengeluaranController::class, 'update'])->name('pengeluaran.update');
+        Route::delete('/pengeluaran/{id}', [pengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
+
     });
 });
