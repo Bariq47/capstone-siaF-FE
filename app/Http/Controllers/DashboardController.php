@@ -27,26 +27,28 @@ class DashboardController extends Controller
     }
     public function index(Request $request)
     {
-        $this->forbidIfNotAllowed();
+        $year  = $request->query('year', now()->year);
+        $month = $request->query('month');
 
-        $year = $request->input('year', Carbon::now()->year);
+        $response = Http::withToken(session('jwt_token'))
+            ->get(env('API_URL') . '/summary', [
+                'year' => $year,
+                'month' => $month,
+            ]);
 
-        // Ambil data tren bulanan
-        $response = Http::withToken($this->token())
-            ->get(env('API_URL') . "/trenBulanan/$year")
-            ->json();
+        if (!$response->successful()) {
+            abort(500, 'Gagal mengambil data dashboard');
+        }
 
-        $dataBulan = $response['data'] ?? [];
-
-        // Hitung total pendapatan/pengeluaran per bulan (opsional)
-        $totalPendapatan = collect($dataBulan)->sum('totalPendapatan');
-        $totalPengeluaran = collect($dataBulan)->sum('totalPengeluaran');
+        $data = $response->json();
 
         return view('dashboard', [
+            'totalPendapatan' => $data['totalPendapatan'] ?? 0,
+            'totalPengeluaran' => $data['totalPengeluaran'] ?? 0,
+            'saldoBersih' => $data['saldoBersih'] ?? 0,
+            'totalTransaksi' => $data['totalTransaksi'] ?? 0,
             'year' => $year,
-            'dataBulan' => $dataBulan,
-            'totalPendapatan' => $totalPendapatan,
-            'totalPengeluaran' => $totalPengeluaran
+            'month' => $month,
         ]);
     }
 }
