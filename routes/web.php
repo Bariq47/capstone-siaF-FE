@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\laporanController;
 use App\Http\Controllers\pendapatanController;
 use App\Http\Controllers\pengeluaranController;
 use Illuminate\Support\Facades\Route;
@@ -55,5 +56,6 @@ Route::middleware('jwt.session')->group(function () {
         Route::put('/pengeluaran/{id}', [pengeluaranController::class, 'update'])->name('pengeluaran.update');
         Route::delete('/pengeluaran/{id}', [pengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
 
+        Route::get('/laporan', [laporanController::class, 'index'])->name('laporan');
     });
 });

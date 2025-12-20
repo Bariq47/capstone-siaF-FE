@@ -13,7 +13,7 @@
         <a href="#">Dashboard</a> <br>
         <a href="{{ route('pendapatan') }}">Pendapatan</a><br>
         <a href="{{ route('pengeluaran') }}">Pengeluaran</a><br>
-        <a href="#">Laporan</a><br>
+        <a href="{{ route('laporan') }}">Laporan</a><br>
         <a href="{{ route('akun') }}">Akun</a>
 
         <form action="{{ route('logout') }}" method="POST" style="display:inline;">
