@@ -31,6 +31,12 @@
                 <a href="{{ route('akun') }}" class="d-block text-white text-decoration-none mb-3">
                     Akun
                 </a>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="d-block text-white text-decoration-none mb-3 bg-transparent border-0">
+                        Logout
+                    </button>
+                </form>
             </div>
 
 
@@ -140,7 +146,7 @@
                         </div>
                     </div>
 
-                  {{-- BUTTON --}}
+                    {{-- BUTTON --}}
                     <div class="col-md-4 d-grid gap-2">
                         <a href="{{ route('pendapatan.create') }}" class="btn btn-primary">
                             Tambah Pendapatan

@@ -26,36 +26,41 @@ Route::get('/login', [UserViewController::class, 'showLogin'])->name('login');
 Route::post('/login', [UserViewController::class, 'login']);
 Route::post('/logout', [UserViewController::class, 'logout'])->name('logout');
 
+
 Route::middleware('jwt.session')->group(function () {
-    Route::middleware('jwt.session')->group(function () {
 
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-        // Route::get('/pendapatan', [PendapatanController::class, 'index'])->name('pendapatan');
-        // Route::get('/pengeluaran', [PengeluaranController::class, 'index'])->name('pengeluaran');
-        // Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
+    Route::middleware('role.access:superAdmin')->group(function () {
+
         Route::get('/akun', [AkunController::class, 'index'])->name('akun');
         Route::get('/akun/tambah', [AkunController::class, 'create']);
         Route::post('/akun', [AkunController::class, 'store']);
         Route::get('/akun/{id}/edit', [AkunController::class, 'edit']);
         Route::put('/akun/{id}', [AkunController::class, 'update']);
         Route::delete('/akun/{id}', [AkunController::class, 'destroy']);
+    });
 
+    Route::middleware('role.access:admin,superAdmin')->group(function () {
 
-        Route::get('/pendapatan', [pendapatanController::class, 'index'])->name('pendapatan');
-        Route::get('/pendapatan/tambah', [pendapatanController::class, 'create'])->name('pendapatan.create');
-        Route::post('/pendapatan', [pendapatanController::class, 'store'])->name('pendapatan.store');
-        Route::get('/pendapatan/{id}/edit', [pendapatanController::class, 'edit'])->name('pendapatan.edit');
-        Route::put('/pendapatan/{id}', [pendapatanController::class, 'update'])->name('pendapatan.update');
-        Route::delete('/pendapatan/{id}', [pendapatanController::class, 'destroy'])->name('pendapatan.destroy');
+        // Pendapatan
+        Route::get('/pendapatan', [PendapatanController::class, 'index'])->name('pendapatan');
+        Route::get('/pendapatan/tambah', [PendapatanController::class, 'create'])->name('pendapatan.create');
+        Route::post('/pendapatan', [PendapatanController::class, 'store'])->name('pendapatan.store');
+        Route::get('/pendapatan/{id}/edit', [PendapatanController::class, 'edit'])->name('pendapatan.edit');
+        Route::put('/pendapatan/{id}', [PendapatanController::class, 'update'])->name('pendapatan.update');
+        Route::delete('/pendapatan/{id}', [PendapatanController::class, 'destroy'])->name('pendapatan.destroy');
 
-        Route::get('/pengeluaran', [pengeluaranController::class, 'index'])->name('pengeluaran');
-        Route::get('/pengeluaran/tambah', [pengeluaranController::class, 'create'])->name('pengeluaran.create');
-        Route::post('/pengeluaran', [pengeluaranController::class, 'store'])->name('pengeluaran.store');
-        Route::get('/pengeluaran/{id}/edit', [pengeluaranController::class, 'edit'])->name('pengeluaran.edit');
-        Route::put('/pengeluaran/{id}', [pengeluaranController::class, 'update'])->name('pengeluaran.update');
-        Route::delete('/pengeluaran/{id}', [pengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
+        // Pengeluaran
+        Route::get('/pengeluaran', [PengeluaranController::class, 'index'])->name('pengeluaran');
+        Route::get('/pengeluaran/tambah', [PengeluaranController::class, 'create'])->name('pengeluaran.create');
+        Route::post('/pengeluaran', [PengeluaranController::class, 'store'])->name('pengeluaran.store');
+        Route::get('/pengeluaran/{id}/edit', [PengeluaranController::class, 'edit'])->name('pengeluaran.edit');
+        Route::put('/pengeluaran/{id}', [PengeluaranController::class, 'update'])->name('pengeluaran.update');
+        Route::delete('/pengeluaran/{id}', [PengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
 
-        Route::get('/laporan', [laporanController::class, 'index'])->name('laporan');
+        // Laporan
+        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
     });
 });

@@ -13,22 +13,8 @@ class laporanController extends Controller
         return session('jwt_token');
     }
 
-    private function role()
-    {
-        return session('role');
-    }
-
-    private function forbidIfNotAllowed()
-    {
-        // Contoh: hanya admin atau superAdmin boleh mengakses laporan
-        if (!in_array($this->role(), ['admin', 'superAdmin'])) {
-            abort(403, 'Akses ditolak');
-        }
-    }
-
     public function index(Request $request)
     {
-        $this->forbidIfNotAllowed();
 
         $year = $request->input('year', Carbon::now()->year);
 

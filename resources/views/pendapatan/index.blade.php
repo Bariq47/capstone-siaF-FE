@@ -11,85 +11,132 @@
 
     <div class="container-fluid px-4 py-3">
 
-        {{-- Header --}}
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h4 class="fw-bold mb-1">Pendapatan</h4>
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 text-muted">
                     <i class="bi bi-bar-chart-fill"></i>
-                    <span class="text-muted">Total Pendapatan Bulan Ini</span>
+                    <span>
+                        Total Pendapatan
+                        {{ \Carbon\Carbon::create($year, $month)->translatedFormat('F Y') }}
+                    </span>
                 </div>
-                <div class="fw-bold text-success fs-5">
-                    {{-- RP. {{ number_format($totalPendapatan, 0, ',', '.') }} --}}
+                <div class="fw-bold text-success fs-4 mt-1">
+                    Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
                 </div>
             </div>
 
-            <a href="{{ route('pendapatan.create') }}" class="btn btn-primary px-4">
-                <i class="bi bi-plus-lg me-1"></i> Tambah Pendapatan
-            </a>
+            <div>
+                <a href="{{ route('pendapatan.create') }}" class="btn btn-primary px-4">
+                    <i class="bi bi-plus-lg me-1"></i> Tambah Pendapatan
+                </a>
+                <a href="{{ route('dashboard') }}" class="btn btn-primary px-4">
+                    <i class="bi bi-plus-lg me-1"></i> dashboard
+                </a>
+            </div>
         </div>
 
-        {{-- Search & Export --}}
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="input-group w-50">
-                <span class="input-group-text bg-white border-end-0">
-                    <i class="bi bi-search"></i>
-                </span>
-                <input type="text" class="form-control border-start-0" placeholder="Cari Transaksi">
+        {{-- FIlter --}}
+        <form method="GET" class="row g-2 align-items-end mb-4">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Bulan</label>
+                <select name="month" class="form-select">
+                    @for ($m = 1; $m <= 12; $m++)
+                        <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
+                            {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                        </option>
+                    @endfor
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Tahun</label>
+                <input type="number" name="year" class="form-control" min="2000" max="{{ now()->year }}"
+                    value="{{ $year }}">
             </div>
 
-            <a href="#" class="btn btn-outline-dark">
-                <i class="bi bi-download me-1"></i> Export
-            </a>
-        </div>
 
-        {{-- Table --}}
-        <div class="card shadow-sm border-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-dark">
+            <div class="col-md-3 d-flex gap-2">
+                <button class="btn btn-dark w-100">
+                    <i class="bi bi-filter me-1"></i> Filter
+                </button>
+
+                <a href="{{ route('pendapatan') }}" class="btn btn-outline-secondary w-100">
+                    Reset
+                </a>
+            </div>
+
+        </form>
+        {{-- Search --}}
+        <form method="GET" class="row g-2 align-items-end mb-4">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Cari Deskripsi</label>
+                <input type="text" name="search" class="form-control"
+                    placeholder="Cari berdasarkan deskripsi transaksi" value="{{ $search }}">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-dark w-100">
+                    <i class="bi bi-search me-1"></i> Cari
+                </button>
+            </div>
+        </form>
+
+
+        {{-- <a href="{{ route('pendapatan.export') }}?year={{ $year }}&month={{ $month }}" --}}
+        <a href="#" class="btn btn-outline-dark">
+            <i class="bi bi-download me-1"></i> Export
+        </a>
+    </div>
+
+    {{-- TABLE --}}
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Deskripsi</th>
+                        <th>Nominal</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse ($pendapatan as $p)
                         <tr>
-                            <th class="fw-semibold">Tanggal</th>
-                            <th class="fw-semibold">Deskripsi</th>
-                            <th class="fw-semibold">Nominal</th>
-                            <th class="fw-semibold text-center">Aksi</th>
+                            <td>{{ \Carbon\Carbon::parse($p['tanggal'])->format('d-m-Y') }}</td>
+                            <td>{{ $p['deskripsi'] ?? '-' }}</td>
+                            <td class="text-success fw-semibold">
+                                Rp {{ number_format($p['nominal'], 0, ',', '.') }}
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ route('pendapatan.edit', $p['id']) }}" class="btn btn-warning">
+                                        Edit
+                                    </a>
+
+                                    <form action="{{ route('pendapatan.destroy', $p['id']) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger"
+                                            onclick="return confirm('Yakin ingin hapus data ini?')">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">
+                                Tidak ada data pendapatan untuk periode ini.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
 
-                    <tbody>
-                        @forelse ($pendapatan as $p)
-                            <tr>
-                                <td>{{ $p['tanggal'] }}</td>
-                                <td>{{ $p['deskripsi'] }}</td>
-                                <td class="text-success fw-semibold">
-                                    Rp {{ number_format($p['nominal'], 0, ',', '.') }}
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('pendapatan.edit', $p['id']) }}" class="btn btn-warning">
-                                            Edit
-                                        </a>
-                                        <form action="{{ route('pendapatan.destroy', $p['id']) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-danger"
-                                                onclick="return confirm('Yakin ingin hapus?')">
-                                                Hapus
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center">Tidak ada data pendapatan.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-
-                </table>
-            </div>
         </div>
+    </div>
 
     </div>
 

@@ -14,17 +14,6 @@ class DashboardController extends Controller
         return session('jwt_token');
     }
 
-    private function role()
-    {
-        return session('role');
-    }
-
-    private function forbidIfNotAllowed()
-    {
-        if (!in_array($this->role(), ['admin', 'superAdmin'])) {
-            abort(403, 'Akses ditolak');
-        }
-    }
     public function index(Request $request)
     {
         $year  = $request->query('year', now()->year);
