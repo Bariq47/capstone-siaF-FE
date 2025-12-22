@@ -38,7 +38,7 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <small class="text-muted">Total Pendapatan</small>
-                    <h5 class="fw-bold">
+                    <h5 class="fw-bold text-success fs-4 mt-1">
                         Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
                     </h5>
                 </div>
@@ -49,7 +49,7 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <small class="text-muted">Total Pengeluaran</small>
-                    <h5 class="fw-bold">
+                    <h5 class="fw-bold text-danger fs-4 mt-1">
                         Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}
                     </h5>
                 </div>
