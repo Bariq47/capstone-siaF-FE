@@ -1,96 +1,87 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Pendapatan</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+@section('title', 'Pendapatan')
 
-<body class="bg-light">
+@section('content')
 
-    <div class="container-fluid px-4 py-3">
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h4 class="fw-bold mb-1">Pendapatan</h4>
-                <div class="d-flex align-items-center gap-2 text-muted">
-                    <i class="bi bi-bar-chart-fill"></i>
-                    <span>
-                        Total Pendapatan
-                        {{ \Carbon\Carbon::create($year, $month)->translatedFormat('F Y') }}
-                    </span>
-                </div>
-                <div class="fw-bold text-success fs-4 mt-1">
-                    Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
-                </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">Pendapatan</h4>
+            <div class="d-flex align-items-center gap-2 text-muted">
+                <i class="bi bi-bar-chart-fill"></i>
+                <span>
+                    Total Pendapatan
+                    {{ \Carbon\Carbon::create($year, $month)->translatedFormat('F Y') }}
+                </span>
             </div>
-
-            <div>
-                <a href="{{ route('pendapatan.create') }}" class="btn btn-primary px-4">
-                    <i class="bi bi-plus-lg me-1"></i> Tambah Pendapatan
-                </a>
-                <a href="{{ route('dashboard') }}" class="btn btn-primary px-4">
-                    <i class="bi bi-plus-lg me-1"></i> dashboard
-                </a>
+            <div class="fw-bold text-success fs-4 mt-1">
+                Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
             </div>
         </div>
 
-        {{-- FIlter --}}
-        <form method="GET" class="row g-2 align-items-end mb-4">
-            <div class="col-md-3">
-                <label class="form-label fw-semibold">Bulan</label>
-                <select name="month" class="form-select">
-                    @for ($m = 1; $m <= 12; $m++)
-                        <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
-                            {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
-                        </option>
-                    @endfor
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label fw-semibold">Tahun</label>
-                <input type="number" name="year" class="form-control" min="2000" max="{{ now()->year }}"
-                    value="{{ $year }}">
-            </div>
-
-
-            <div class="col-md-3 d-flex gap-2">
-                <button class="btn btn-dark w-100">
-                    <i class="bi bi-filter me-1"></i> Filter
-                </button>
-
-                <a href="{{ route('pendapatan') }}" class="btn btn-outline-secondary w-100">
-                    Reset
-                </a>
-            </div>
-
-        </form>
-        {{-- Search --}}
-        <form method="GET" class="row g-2 align-items-end mb-4">
-            <div class="col-md-4">
-                <label class="form-label fw-semibold">Cari Deskripsi</label>
-                <input type="text" name="search" class="form-control"
-                    placeholder="Cari berdasarkan deskripsi transaksi" value="{{ $search }}">
-            </div>
-            <div class="col-md-2">
-                <button class="btn btn-dark w-100">
-                    <i class="bi bi-search me-1"></i> Cari
-                </button>
-            </div>
-        </form>
-
-
-        <a href="{{ route('pendapatan.export', [
-            'jenis' => 'pendapatan',
-            'year' => $year,
-            'month' => $month,
-            'search' => $search,
-        ]) }}"
-            class="btn btn-outline-dark">
-            <i class="bi bi-download me-1"></i> Export
-        </a>
+        <div>
+            <a href="{{ route('pendapatan.create') }}" class="btn btn-primary px-4">
+                <i class="bi bi-plus-lg me-1"></i> Tambah Pendapatan
+            </a>
+            <a href="{{ route('dashboard') }}" class="btn btn-outline-primary px-4">
+                Dashboard
+            </a>
+        </div>
     </div>
+
+    {{-- FILTER --}}
+    <form method="GET" class="row g-2 align-items-end mb-4">
+        <div class="col-md-3">
+            <label class="form-label fw-semibold">Bulan</label>
+            <select name="month" class="form-select">
+                @for ($m = 1; $m <= 12; $m++)
+                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
+                        {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                    </option>
+                @endfor
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label fw-semibold">Tahun</label>
+            <input type="number" name="year" class="form-control" min="2000" max="{{ now()->year }}"
+                value="{{ $year }}">
+        </div>
+
+        <div class="col-md-3 d-flex gap-2">
+            <button class="btn btn-dark w-100">
+                <i class="bi bi-filter me-1"></i> Filter
+            </button>
+
+            <a href="{{ route('pendapatan') }}" class="btn btn-outline-secondary w-100">
+                Reset
+            </a>
+        </div>
+    </form>
+
+    {{-- SEARCH --}}
+    <form method="GET" class="row g-2 align-items-end mb-4">
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Cari Deskripsi</label>
+            <input type="text" name="search" class="form-control" placeholder="Cari berdasarkan deskripsi transaksi"
+                value="{{ $search }}">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-dark w-100">
+                <i class="bi bi-search me-1"></i> Cari
+            </button>
+        </div>
+    </form>
+
+    <a href="{{ route('pendapatan.export', [
+        'jenis' => 'pendapatan',
+        'year' => $year,
+        'month' => $month,
+        'search' => $search,
+    ]) }}"
+        class="btn btn-outline-dark mb-3">
+        <i class="bi bi-download me-1"></i> Export
+    </a>
 
     {{-- TABLE --}}
     <div class="card shadow-sm border-0">
@@ -104,7 +95,6 @@
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @forelse ($pendapatan as $p)
                         <tr>
@@ -118,7 +108,6 @@
                                     <a href="{{ route('pendapatan.edit', $p['id']) }}" class="btn btn-warning">
                                         Edit
                                     </a>
-
                                     <form action="{{ route('pendapatan.destroy', $p['id']) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
@@ -139,12 +128,7 @@
                     @endforelse
                 </tbody>
             </table>
-
         </div>
     </div>
 
-    </div>
-
-</body>
-
-</html>
+@endsection
