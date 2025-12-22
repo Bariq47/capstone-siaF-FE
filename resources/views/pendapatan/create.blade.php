@@ -1,45 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <title>Tambah Pendapatan</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body class="bg-light">
 
-    <h2>Tambah Pendapatan</h2>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
 
-    {{-- Tampilkan error dari backend --}}
-    @if ($errors->any())
-        <div style="color:red;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="card shadow p-4" style="width: 380px; border-radius: 12px;">
+
+            <h5 class="text-center fw-bold mb-1">Tambah Pendapatan</h5>
+            <p class="text-center text-muted mb-4">Masukkan data pendapatan</p>
+
+            {{-- Error --}}
+            @if ($errors->any())
+                <div class="alert alert-danger py-2">
+                    <ul class="mb-0 small">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="/pendapatan">
+                @csrf
+
+                <table class="table table-borderless align-middle mb-3">
+                    <tbody>
+                        <tr>
+                            <td class="pb-3">
+                                <label class="form-label small fw-semibold">Tanggal</label>
+                                <input type="date"
+                                    name="tanggal"
+                                    class="form-control bg-light"
+                                    value="{{ old('tanggal') }}"
+                                    required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="pb-3">
+                                <label class="form-label small fw-semibold">Deskripsi</label>
+                                <input type="text"
+                                    name="deskripsi"
+                                    class="form-control bg-light"
+                                    placeholder="Contoh: Penjualan"
+                                    value="{{ old('deskripsi') }}"
+                                    required>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label class="form-label small fw-semibold">Nominal</label>
+                                <input type="number"
+                                    name="nominal"
+                                    class="form-control bg-light"
+                                    placeholder="100000"
+                                    value="{{ old('nominal') }}"
+                                    required>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success w-100 fw-semibold">
+                        Simpan
+                    </button>
+                    <a href="/pendapatan" class="btn btn-secondary w-100 fw-semibold">
+                        Kembali
+                    </a>
+                </div>
+
+            </form>
+
         </div>
-    @endif
-
-    <form method="POST" action="/pendapatan">
-        @csrf
-
-        <label>Tanggal</label><br>
-        <input type="date" name="tanggal" value="{{ old('tanggal') }}" required>
-        <br><br>
-
-        <label>Deskripsi</label><br>
-        <input type="text" name="deskripsi" value="{{ old('deskripsi') }}" required>
-        <br><br>
-
-        <label>Nominal</label><br>
-        <input type="number" name="nominal" value="{{ old('nominal') }}" required>
-        <br><br>
-
-        <button type="submit">Simpan</button>
-        <a href="/pendapatan">Kembali</a>
-    </form>
+    </div>
 
 </body>
-
 </html>

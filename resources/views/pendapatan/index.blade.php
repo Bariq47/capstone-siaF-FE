@@ -81,8 +81,13 @@
         </form>
 
 
-        {{-- <a href="{{ route('pendapatan.export') }}?year={{ $year }}&month={{ $month }}" --}}
-        <a href="#" class="btn btn-outline-dark">
+        <a href="{{ route('pendapatan.export', [
+            'jenis' => 'pendapatan',
+            'year' => $year,
+            'month' => $month,
+            'search' => $search,
+        ]) }}"
+            class="btn btn-outline-dark">
             <i class="bi bi-download me-1"></i> Export
         </a>
     </div>

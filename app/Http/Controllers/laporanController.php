@@ -41,4 +41,22 @@ class laporanController extends Controller
             'saldoBersih' => $saldoBersih,
         ]);
     }
+
+    public function export(Request $request)
+    {
+        $response = Http::withToken($this->token())
+            ->get(env('API_URL') . '/exportTransaksi', [
+                'jenis' => $request->input('jenis'),
+                'year' => $request->input('year'),
+                'month' => $request->input('month'),
+                'search' => $request->input('search'),
+            ]);
+        return response()->streamDownload(
+            fn() => print($response->body()),
+            'transaksi_' . $request->query('jenis') . '.xlsx',
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]
+        );
+    }
 }

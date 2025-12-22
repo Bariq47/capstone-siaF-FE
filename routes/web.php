@@ -62,5 +62,6 @@ Route::middleware('jwt.session')->group(function () {
 
         // Laporan
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
+        Route::get('/laporan/export', [LaporanController::class, 'export'])->name('pendapatan.export');
     });
 });
