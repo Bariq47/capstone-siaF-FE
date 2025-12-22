@@ -13,22 +13,8 @@ class laporanController extends Controller
         return session('jwt_token');
     }
 
-    private function role()
-    {
-        return session('role');
-    }
-
-    private function forbidIfNotAllowed()
-    {
-        // Contoh: hanya admin atau superAdmin boleh mengakses laporan
-        if (!in_array($this->role(), ['admin', 'superAdmin'])) {
-            abort(403, 'Akses ditolak');
-        }
-    }
-
     public function index(Request $request)
     {
-        $this->forbidIfNotAllowed();
 
         $year = $request->input('year', Carbon::now()->year);
 
@@ -54,5 +40,23 @@ class laporanController extends Controller
             'totalPengeluaran' => $totalPengeluaran,
             'saldoBersih' => $saldoBersih,
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $response = Http::withToken($this->token())
+            ->get(env('API_URL') . '/exportTransaksi', [
+                'jenis' => $request->input('jenis'),
+                'year' => $request->input('year'),
+                'month' => $request->input('month'),
+                'search' => $request->input('search'),
+            ]);
+        return response()->streamDownload(
+            fn() => print($response->body()),
+            'transaksi_' . $request->query('jenis') . '.xlsx',
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]
+        );
     }
 }

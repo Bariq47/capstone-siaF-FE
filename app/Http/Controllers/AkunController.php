@@ -12,18 +12,6 @@ class AkunController extends Controller
         return session('jwt_token');
     }
 
-    private function role()
-    {
-        return session('role');
-    }
-
-    private function forbidIfNotSuperAdmin()
-    {
-        if ($this->role() !== 'superAdmin') {
-            abort(403, 'Akses ditolak');
-        }
-    }
-
     public function index()
     {
         $users = Http::withToken($this->token())
@@ -32,19 +20,17 @@ class AkunController extends Controller
 
         return view('akun.index', [
             'users' => $users,
-            'role'  => $this->role()
         ]);
     }
 
     public function create()
     {
-        $this->forbidIfNotSuperAdmin();
         return view('akun.create');
     }
 
     public function store(Request $request)
     {
-        $this->forbidIfNotSuperAdmin();
+        ;
 
         $response = Http::withToken($this->token())
             ->post(env('API_URL') . '/users', $request->all());
@@ -61,7 +47,6 @@ class AkunController extends Controller
 
     public function edit($id)
     {
-        $this->forbidIfNotSuperAdmin();
 
         $user = Http::withToken($this->token())
             ->get(env('API_URL') . "/users/$id")
@@ -72,8 +57,6 @@ class AkunController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->forbidIfNotSuperAdmin();
-
         $response = Http::withToken($this->token())
             ->put(env('API_URL') . "/users/$id", $request->all());
 
@@ -89,8 +72,6 @@ class AkunController extends Controller
 
     public function destroy($id)
     {
-        $this->forbidIfNotSuperAdmin();
-
         Http::withToken($this->token())
             ->delete(env('API_URL') . "/users/$id");
 

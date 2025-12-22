@@ -13,18 +13,6 @@ class pengeluaranController extends Controller
         return session('jwt_token');
     }
 
-    private function role()
-    {
-        return session('role');
-    }
-
-    private function forbidIfNotAllowed()
-    {
-        // Contoh: hanya admin atau superAdmin boleh mengelola pengeluaran
-        if (!in_array($this->role(), ['admin', 'superAdmin'])) {
-            abort(403, 'Akses ditolak');
-        }
-    }
     private function getKategoripengeluaran()
     {
         $kategori = Http::withToken($this->token())
@@ -44,20 +32,19 @@ class pengeluaranController extends Controller
 
         return view('pengeluaran.index', [
             'pengeluaran' => $pengeluaran,
-            'role'  => $this->role()
         ]);
     }
 
     public function create()
     {
-        $this->forbidIfNotAllowed();
+
 
         return view('pengeluaran.create');
     }
 
     public function store(Request $request)
     {
-        $this->forbidIfNotAllowed();
+
 
         $request->validate([
             'tanggal' => 'required|date',
@@ -87,7 +74,7 @@ class pengeluaranController extends Controller
 
     public function edit($id)
     {
-        $this->forbidIfNotAllowed();
+
 
         $pengeluaran = Http::withToken($this->token())
             ->get(env('API_URL') . "/transaksi/$id")
@@ -104,7 +91,7 @@ class pengeluaranController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->forbidIfNotAllowed();
+
 
         $request->validate([
             'tanggal' => 'required|date',
@@ -139,7 +126,7 @@ class pengeluaranController extends Controller
 
     public function destroy($id)
     {
-        $this->forbidIfNotAllowed();
+
 
         $response = Http::withToken($this->token())
             ->delete(env('API_URL') . "/transaksi/$id");

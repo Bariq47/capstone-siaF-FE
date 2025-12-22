@@ -12,19 +12,6 @@ class pendapatanController extends Controller
     {
         return session('jwt_token');
     }
-
-    private function role()
-    {
-        return session('role');
-    }
-
-    private function forbidIfNotAllowed()
-    {
-        // Contoh: hanya admin atau superAdmin boleh mengelola pendapatan
-        if (!in_array($this->role(), ['admin', 'superAdmin'])) {
-            abort(403, 'Akses ditolak');
-        }
-    }
     private function getKategoriPendapatan()
     {
         $kategori = Http::withToken($this->token())
@@ -37,29 +24,50 @@ class pendapatanController extends Controller
         return $kategoriPendapatan['id'] ?? null;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $pendapatan = Http::withToken($this->token())
-            ->get(env('API_URL') . '/laporanPendapatan')
-            ->json('data');
+        $year   = (int) $request->query('year', now()->year);
+        $month  = (int) $request->query('month', now()->month);
+        $search = $request->query('search');
+
+        $summaryResponse = Http::withToken($this->token())
+            ->get(env('API_URL') . '/summary', [
+                'year'  => $year,
+                'month' => $month,
+            ]);
+
+        if (!$summaryResponse->successful()) {
+            abort(500, 'Gagal mengambil summary pendapatan');
+        }
+
+        $summary = $summaryResponse->json();
+
+        $pendapatanResponse = Http::withToken($this->token())
+            ->get(env('API_URL') . '/laporanPendapatan', [
+                'year'   => $year,
+                'month'  => $month,
+                'search' => $search,
+            ]);
+
+        if (!$pendapatanResponse->successful()) {
+            abort(500, 'Gagal mengambil data pendapatan');
+        }
 
         return view('pendapatan.index', [
-            'pendapatan' => $pendapatan,
-            'role'  => $this->role()
+            'pendapatan'      => $pendapatanResponse->json('data') ?? [],
+            'totalPendapatan' => $summary['totalPendapatan'] ?? 0,
+            'year'            => $year,
+            'month'           => $month,
+            'search'          => $search,
         ]);
     }
-
     public function create()
     {
-        $this->forbidIfNotAllowed();
-
         return view('pendapatan.create');
     }
 
     public function store(Request $request)
     {
-        $this->forbidIfNotAllowed();
-
         $request->validate([
             'tanggal' => 'required|date',
             'deskripsi' => 'required|string',
@@ -88,8 +96,6 @@ class pendapatanController extends Controller
 
     public function edit($id)
     {
-        $this->forbidIfNotAllowed();
-
         $pendapatan = Http::withToken($this->token())
             ->get(env('API_URL') . "/transaksi/$id")
             ->json('data');
@@ -105,8 +111,6 @@ class pendapatanController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->forbidIfNotAllowed();
-
         $request->validate([
             'tanggal' => 'required|date',
             'deskripsi' => 'required|string',
@@ -140,7 +144,6 @@ class pendapatanController extends Controller
 
     public function destroy($id)
     {
-        $this->forbidIfNotAllowed();
 
         $response = Http::withToken($this->token())
             ->delete(env('API_URL') . "/transaksi/$id");
