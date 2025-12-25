@@ -1,57 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <title>Edit Akun</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body class="bg-light">
 
-    <h2>Edit Akun</h2>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
 
-    {{-- Tampilkan error dari backend --}}
-    @if ($errors->any())
-        <div style="color:red;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="card shadow p-4" style="width: 400px; border-radius: 12px;">
+
+            <h5 class="text-center fw-bold mb-1">Edit Akun</h5>
+            <p class="text-center text-muted mb-4">Perbarui data akun pengguna</p>
+
+            {{-- Error --}}
+            @if ($errors->any())
+                <div class="alert alert-danger py-2">
+                    <ul class="mb-0 small">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="/akun/{{ $user['id'] }}">
+                @csrf
+                @method('PUT')
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Username</label>
+                    <input type="text" name="username" class="form-control bg-light"
+                        value="{{ old('username', $user['username']) }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Email</label>
+                    <input type="email" name="email" class="form-control bg-light"
+                        value="{{ old('email', $user['email']) }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">
+                        Password <span class="text-muted">(kosongkan jika tidak diubah)</span>
+                    </label>
+                    <input type="password" name="password" class="form-control bg-light">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-semibold">Role</label>
+                    <select name="role" class="form-select bg-light" required>
+                        <option value="">-- Pilih Role --</option>
+                        <option value="admin" {{ old('role', $user['role']) === 'admin' ? 'selected' : '' }}>
+                            Admin
+                        </option>
+                        <option value="superAdmin" {{ old('role', $user['role']) === 'superAdmin' ? 'selected' : '' }}>
+                            Super Admin
+                        </option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-warning w-100 fw-semibold">
+                        Update
+                    </button>
+                    <a href="/akun" class="btn btn-secondary w-100 fw-semibold">
+                        Kembali
+                    </a>
+                </div>
+
+            </form>
+
         </div>
-    @endif
-
-    <form method="POST" action="/akun/{{ $user['id'] }}">
-        @csrf
-        @method('PUT')
-
-        <label>Username</label><br>
-        <input type="text" name="username" value="{{ old('username', $user['username']) }}" required>
-        <br><br>
-
-        <label>Email</label><br>
-        <input type="email" name="email" value="{{ old('email', $user['email']) }}" required>
-        <br><br>
-
-        <label>Password (kosongkan jika tidak diubah)</label><br>
-        <input type="password" name="password">
-        <br><br>
-
-        <label>Role</label><br>
-        <select name="role">
-            <option value="">-- Pilih Role --</option>
-            <option value="admin" {{ old('role', $user['role']) === 'admin' ? 'selected' : '' }}>
-                Admin
-            </option>
-            <option value="superAdmin" {{ old('role', $user['role']) === 'superAdmin' ? 'selected' : '' }}>
-                Super Admin
-            </option>
-        </select>
-        <br><br>
-
-        <button type="submit">Update</button>
-        <a href="/akun">Kembali</a>
-    </form>
+    </div>
 
 </body>
 

@@ -35,11 +35,11 @@ Route::middleware('jwt.session')->group(function () {
     Route::middleware('role.access:superAdmin')->group(function () {
 
         Route::get('/akun', [AkunController::class, 'index'])->name('akun');
-        Route::get('/akun/tambah', [AkunController::class, 'create']);
-        Route::post('/akun', [AkunController::class, 'store']);
-        Route::get('/akun/{id}/edit', [AkunController::class, 'edit']);
-        Route::put('/akun/{id}', [AkunController::class, 'update']);
-        Route::delete('/akun/{id}', [AkunController::class, 'destroy']);
+        Route::get('/akun/tambah', [AkunController::class, 'create'])->name('akun.create');
+        Route::post('/akun', [AkunController::class, 'store'])->name('akun.store');
+        Route::get('/akun/{id}/edit', [AkunController::class, 'edit'])->name('akun.edit');
+        Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update');
+        Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
     });
 
     Route::middleware('role.access:admin,superAdmin')->group(function () {

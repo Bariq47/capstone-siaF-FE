@@ -20,6 +20,7 @@ class AkunController extends Controller
 
         return view('akun.index', [
             'users' => $users,
+            'role'  => session('role'),
         ]);
     }
 
@@ -29,8 +30,7 @@ class AkunController extends Controller
     }
 
     public function store(Request $request)
-    {
-        ;
+    {;
 
         $response = Http::withToken($this->token())
             ->post(env('API_URL') . '/users', $request->all());

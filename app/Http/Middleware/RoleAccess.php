@@ -8,30 +8,35 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleAccess
 {
-    private function token()
-    {
-        return session('jwt_token');
-    }
-
-    private function role()
-    {
-        return session('role');
-    }
-
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string  ...$roles
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!$this->token()) {
-            return redirect()->route('login')
+        if (!session()->has('jwt_token')) {
+            return redirect()
+                ->route('login')
                 ->with('error', 'Silakan login terlebih dahulu');
         }
 
-        if (!in_array($this->role(), $roles)) {
+        $userRole = session('role');
+
+        if (!$userRole) {
             session()->flush();
 
-            return redirect()->route('login')
-                ->with('error', 'Akses ditolak');
+            return redirect()
+                ->route('login')
+                ->with('error', 'Session tidak valid, silakan login ulang');
         }
 
+        if (!in_array($userRole, $roles)) {
+            return abort(403, 'Akses ditolak');
+        }
         return $next($request);
     }
 }

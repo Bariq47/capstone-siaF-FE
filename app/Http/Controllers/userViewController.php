@@ -21,12 +21,12 @@ class UserViewController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'password' => 'required',
         ]);
 
         $response = Http::post(env('API_URL') . '/login', [
-            'email'    => $request->email,
+            'email' => $request->email,
             'password' => $request->password,
         ]);
 
@@ -38,7 +38,7 @@ class UserViewController extends Controller
 
         session([
             'jwt_token' => $response->json('token'),
-            'role'      => $response->json('user.role'),
+            'role' => $response->json('user.role'),
         ]);
 
         return redirect()->route('dashboard');
