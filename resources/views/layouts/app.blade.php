@@ -16,26 +16,23 @@
             <div class="col-md-2 bg-primary text-white min-vh-100 p-4">
                 <h5 class="fw-bold mb-4">Arvisual</h5>
 
-                <a href="{{ route('dashboard') }}"
-                    class="d-block text-white text-decoration-none mb-3 fw-semibold">
+                <a href="{{ route('dashboard') }}" class="d-block text-white text-decoration-none mb-3 fw-semibold">
                     Dashboard
                 </a>
 
-                <a href="{{ route('pendapatan') }}"
-                    class="d-block text-white text-decoration-none mb-3">
+                <a href="{{ route('pendapatan') }}" class="d-block text-white text-decoration-none mb-3">
                     Pendapatan
                 </a>
 
-                <a href="{{ route('pengeluaran') }}"
-                    class="d-block text-white text-decoration-none mb-3">
+                <a href="{{ route('pengeluaran') }}" class="d-block text-white text-decoration-none mb-3">
                     Pengeluaran
                 </a>
 
-                <a href="{{ route('akun') }}"
-                    class="d-block text-white text-decoration-none mb-3">
-                    Akun
-                </a>
-
+                @if (session('role') === 'superAdmin')
+                    <a href="{{ route('akun') }}" class="d-block text-white text-decoration-none mb-3">
+                        Akun
+                    </a>
+                @endif
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit"
@@ -54,4 +51,5 @@
     </div>
 
 </body>
+
 </html>
