@@ -44,8 +44,8 @@ class pendapatanController extends Controller
 
         $pendapatanResponse = Http::withToken($this->token())
             ->get(env('API_URL') . '/laporanPendapatan', [
-                'year'   => $year,
-                'month'  => $month,
+                'year' => $year,
+                'month' => $month,
                 'search' => $search,
             ]);
 
@@ -54,11 +54,11 @@ class pendapatanController extends Controller
         }
 
         return view('pendapatan.index', [
-            'pendapatan'      => $pendapatanResponse->json('data') ?? [],
-            'totalPendapatan' => $summary['totalPendapatan'] ?? 0,
-            'year'            => $year,
-            'month'           => $month,
-            'search'          => $search,
+            'pendapatan' => $pendapatanResponse->json('data') ?? [],
+            'totalPendapatan'=> $summary['totalPendapatan'] ?? 0,
+            'year' => $year,
+            'month' => $month,
+            'search' => $search,
         ]);
     }
     public function create()

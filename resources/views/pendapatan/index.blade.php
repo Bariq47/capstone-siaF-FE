@@ -23,9 +23,6 @@
             <a href="{{ route('pendapatan.create') }}" class="btn btn-primary px-4">
                 <i class="bi bi-plus-lg me-1"></i> Tambah Pendapatan
             </a>
-            <a href="{{ route('dashboard') }}" class="btn btn-outline-primary px-4">
-                Dashboard
-            </a>
         </div>
     </div>
 
