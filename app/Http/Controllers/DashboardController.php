@@ -19,23 +19,38 @@ class DashboardController extends Controller
         $year  = $request->query('year', now()->year);
         $month = $request->query('month');
 
-        $response = Http::withToken(session('jwt_token'))
+        $summaryResponse = Http::withToken(session('jwt_token'))
             ->get(env('API_URL') . '/summary', [
                 'year' => $year,
                 'month' => $month,
             ]);
 
-        if (!$response->successful()) {
+        if (!$summaryResponse->successful()) {
             abort(500, 'Gagal mengambil data dashboard');
         }
 
-        $data = $response->json();
+        $summary = $summaryResponse->json();
+
+        $chartResponse = Http::withToken(session('jwt_token'))
+            ->get(env('API_URL') . '/chart', [
+                'year' => $year,
+                'month' => $month,
+            ]);
+
+        $chart = $chartResponse->successful()
+            ? $chartResponse->json()
+            : ['labels' => [], 'pendapatan' => [], 'pengeluaran' => []];
 
         return view('dashboard', [
-            'totalPendapatan' => $data['totalPendapatan'] ?? 0,
-            'totalPengeluaran' => $data['totalPengeluaran'] ?? 0,
-            'saldoBersih' => $data['saldoBersih'] ?? 0,
-            'totalTransaksi' => $data['totalTransaksi'] ?? 0,
+            'totalPendapatan' => $summary['totalPendapatan'] ?? 0,
+            'totalPengeluaran' => $summary['totalPengeluaran'] ?? 0,
+            'saldoBersih' => $summary['saldoBersih'] ?? 0,
+            'totalTransaksi' => $summary['totalTransaksi'] ?? 0,
+
+            'labels' => $chart['labels'],
+            'dataPendapatan' => $chart['pendapatan'],
+            'dataPengeluaran' => $chart['pengeluaran'],
+
             'year' => $year,
             'month' => $month,
         ]);

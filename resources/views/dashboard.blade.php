@@ -87,12 +87,11 @@
             <div class="card shadow-sm" style="height:300px;">
                 <div class="card-body">
                     <strong>Tren Transaksi</strong>
-                    <div class="text-muted mt-3">
-                        CHART
-                    </div>
+                    <canvas id="lineChart" class="mt-3"></canvas>
                 </div>
             </div>
         </div>
+
 
         {{-- ACTION --}}
         <div class="col-md-4 d-grid gap-2">
@@ -113,3 +112,47 @@
     </div>
 
 @endsection
+@push('scripts')
+    <script>
+        const labels = @json($labels ?? []);
+        const pendapatan = @json($dataPendapatan ?? []);
+        const pengeluaran = @json($dataPengeluaran ?? []);
+
+        if (labels.length) {
+            new Chart(document.getElementById('lineChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                            label: 'Pendapatan',
+                            data: pendapatan,
+                            borderWidth: 2,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Pengeluaran',
+                            data: pengeluaran,
+                            borderWidth: 2,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: ctx =>
+                                    ctx.dataset.label + ': Rp ' +
+                                    ctx.raw.toLocaleString('id-ID')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+@endpush

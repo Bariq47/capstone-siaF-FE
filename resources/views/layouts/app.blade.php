@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Arvisual')</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="bg-light">
-
     <div class="container-fluid">
         <div class="row">
 
@@ -49,7 +49,7 @@
 
         </div>
     </div>
-
+    @stack('scripts')
 </body>
 
 </html>
