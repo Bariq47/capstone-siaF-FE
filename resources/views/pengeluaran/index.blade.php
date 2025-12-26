@@ -69,7 +69,15 @@
             </button>
         </div>
     </form>
-
+    <a href="{{ route('transaksi.export', [
+        'jenis' => 'pengeluaran',
+        'year' => $year,
+        'month' => $month,
+        'search' => $search,
+    ]) }}"
+        class="btn btn-outline-dark mb-3">
+        <i class="bi bi-download me-1"></i> Export
+    </a>
     {{-- TABLE --}}
     <div class="card shadow-sm border-0">
         <div class="table-responsive">

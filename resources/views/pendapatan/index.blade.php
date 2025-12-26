@@ -70,7 +70,7 @@
         </div>
     </form>
 
-    <a href="{{ route('pendapatan.export', [
+    <a href="{{ route('transaksi.export', [
         'jenis' => 'pendapatan',
         'year' => $year,
         'month' => $month,
