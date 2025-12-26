@@ -4,155 +4,168 @@
 
 @section('content')
 
-    {{-- FILTER --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold mb-0">Dashboard</h4>
+{{-- FILTER --}}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">Dashboard</h4>
 
-        <form method="GET" action="{{ route('dashboard') }}" class="d-flex gap-2">
+    <form method="GET" action="{{ route('dashboard') }}" class="d-flex gap-2">
+        <select name="month" class="form-select form-select-sm">
+            <option value="">Semua Bulan (Card)</option>
+            @for ($m = 1; $m <= 12; $m++)
+                <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
+                    {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                </option>
+            @endfor
+        </select>
 
-            <select name="month" class="form-select form-select-sm">
-                <option value="">Semua Bulan</option>
-                @for ($m = 1; $m <= 12; $m++)
-                    <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
-                        {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
-                    </option>
-                @endfor
-            </select>
+        <select name="year" class="form-select form-select-sm">
+            @for ($y = now()->year; $y >= now()->year - 5; $y--)
+                <option value="{{ $y }}" {{ request('year', now()->year) == $y ? 'selected' : '' }}>
+                    {{ $y }}
+                </option>
+            @endfor
+        </select>
 
-            <select name="year" class="form-select form-select-sm">
-                @for ($y = now()->year; $y >= now()->year - 5; $y--)
-                    <option value="{{ $y }}" {{ request('year', now()->year) == $y ? 'selected' : '' }}>
-                        {{ $y }}
-                    </option>
-                @endfor
-            </select>
+        <button class="btn btn-primary btn-sm">Terapkan</button>
+    </form>
+</div>
 
-            <button class="btn btn-primary btn-sm">Terapkan</button>
-        </form>
+{{-- CARD STATISTIK --}}
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <small class="text-muted">Total Pendapatan</small>
+                <h5 class="fw-bold text-success fs-4 mt-1">
+                    Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
+                </h5>
+            </div>
+        </div>
     </div>
 
-    {{-- CARD STATISTIK --}}
-    <div class="row g-3 mb-4">
-
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <small class="text-muted">Total Pendapatan</small>
-                    <h5 class="fw-bold text-success fs-4 mt-1">
-                        Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
-                    </h5>
-                </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <small class="text-muted">Total Pengeluaran</small>
+                <h5 class="fw-bold text-danger fs-4 mt-1">
+                    Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}
+                </h5>
             </div>
         </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <small class="text-muted">Total Pengeluaran</small>
-                    <h5 class="fw-bold text-danger fs-4 mt-1">
-                        Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}
-                    </h5>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <small class="text-muted">Saldo Bersih</small>
-                    <h5 class="fw-bold">
-                        Rp {{ number_format($saldoBersih, 0, ',', '.') }}
-                    </h5>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <small class="text-muted">Total Transaksi</small>
-                    <h5 class="fw-bold">
-                        {{ $totalTransaksi }}
-                    </h5>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <div class="row g-3">
-
-        {{-- CHART --}}
-        <div class="col-md-8">
-            <div class="card shadow-sm" style="height:300px;">
-                <div class="card-body">
-                    <strong>Tren Transaksi</strong>
-                    <canvas id="lineChart" class="mt-3"></canvas>
-                </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <small class="text-muted">Saldo Bersih</small>
+                <h5 class="fw-bold mt-1">
+                    Rp {{ number_format($saldoBersih, 0, ',', '.') }}
+                </h5>
             </div>
         </div>
-
-
-        {{-- ACTION --}}
-        <div class="col-md-4 d-grid gap-2">
-            <a href="{{ route('pendapatan.create') }}" class="btn btn-primary">
-                Tambah Pendapatan
-            </a>
-            <a href="{{ route('pengeluaran.create') }}" class="btn btn-primary">
-                Tambah Pengeluaran
-            </a>
-            <a href="#" class="btn btn-outline-primary">
-                Buat Laporan
-            </a>
-            <a href="#" class="btn btn-outline-dark">
-                Export Data
-            </a>
-        </div>
-
     </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <small class="text-muted">Total Transaksi</small>
+                <h5 class="fw-bold mt-1">
+                    {{ $totalTransaksi }}
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+
+    {{-- CHART --}}
+    <div class="col-md-8">
+        @if ($month)
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <strong class="d-block mb-2">
+                        Tren Transaksi -
+                        {{ \Carbon\Carbon::create()->month($month)->translatedFormat('F') }}
+                        {{ $year }}
+                    </strong>
+
+                    <div style="height:260px;">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="alert alert-info h-100 d-flex align-items-center">
+                Pilih bulan untuk menampilkan chart
+            </div>
+        @endif
+    </div>
+
+    {{-- ACTION --}}
+    <div class="col-md-4 d-grid gap-2">
+        <a href="{{ route('pendapatan.create') }}" class="btn btn-primary">
+            Tambah Pendapatan
+        </a>
+        <a href="{{ route('pengeluaran.create') }}" class="btn btn-primary">
+            Tambah Pengeluaran
+        </a>
+        <a href="#" class="btn btn-outline-primary">
+            Buat Laporan
+        </a>
+        <a href="#" class="btn btn-outline-dark">
+            Export Data
+        </a>
+    </div>
+
+</div>
 
 @endsection
-@push('scripts')
-    <script>
-        const labels = @json($labels ?? []);
-        const pendapatan = @json($dataPendapatan ?? []);
-        const pengeluaran = @json($dataPengeluaran ?? []);
 
-        if (labels.length) {
-            new Chart(document.getElementById('lineChart'), {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                            label: 'Pendapatan',
-                            data: pendapatan,
-                            borderWidth: 2,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Pengeluaran',
-                            data: pengeluaran,
-                            borderWidth: 2,
-                            tension: 0.4
-                        }
-                    ]
+@push('scripts')
+<script>
+const labels = @json($labels ?? []);
+const pendapatan = @json($dataPendapatan ?? []);
+const pengeluaran = @json($dataPengeluaran ?? []);
+
+if (labels.length && document.getElementById('lineChart')) {
+    new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: 'Pendapatan',
+                    data: pendapatan,
+                    borderWidth: 2,
+                    tension: 0.4
                 },
-                options: {
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: ctx =>
-                                    ctx.dataset.label + ': Rp ' +
-                                    ctx.raw.toLocaleString('id-ID')
-                            }
-                        }
+                {
+                    label: 'Pengeluaran',
+                    data: pengeluaran,
+                    borderWidth: 2,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: ctx =>
+                            ctx.dataset.label + ': Rp ' +
+                            ctx.raw.toLocaleString('id-ID')
                     }
                 }
-            });
+            }
         }
-    </script>
+    });
+}
+</script>
 @endpush
