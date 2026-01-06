@@ -106,7 +106,7 @@
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <strong class="d-block mb-3">Aksi Cepat</strong>
+                    {{-- <strong class="d-block mb-3"></strong> --}}
 
                     <div class="d-grid gap-2">
                         <a href="{{ route('pendapatan.create') }}" class="btn btn-success">
