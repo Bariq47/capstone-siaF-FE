@@ -59,4 +59,21 @@ class laporanController extends Controller
             ]
         );
     }
+
+    public function exportLaporanKeuangan(Request $request)
+    {
+        $response = Http::withToken($this->token())
+            ->get(env('API_URL') . '/exportLaporanKeuangan', [
+                'year' => $request->year,
+                'month' => $request->month,
+            ]);
+
+        return response()->streamDownload(
+            fn() => print($response->body()),
+            'laporan_keuangan.xlsx',
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]
+        );
+    }
 }
