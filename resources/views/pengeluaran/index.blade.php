@@ -103,11 +103,12 @@
                                     <a href="{{ route('pengeluaran.edit', $p['id']) }}" class="btn btn-warning">
                                         Edit
                                     </a>
-                                    <form action="{{ route('pengeluaran.destroy', $p['id']) }}" method="POST">
+                                    <form action="{{ route('pengeluaran.destroy', $p['id']) }}" method="POST"
+                                        class="form-delete">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-danger"
-                                            onclick="return confirm('Yakin ingin hapus data ini?')">
+                                        <button type="button" class="btn btn-danger btn-delete"
+                                            data-text="Data pengeluaran ini akan dihapus permanen">
                                             Hapus
                                         </button>
                                     </form>

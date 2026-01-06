@@ -45,10 +45,11 @@
                                     </a>
 
                                     <form action="{{ route('akun.destroy', $user['id']) }}" method="POST"
-                                        onsubmit="return confirm('Yakin ingin hapus akun ini?')">
+                                        class="form-delete">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-danger">
+                                        <button type="button" class="btn btn-danger btn-delete"
+                                            data-text="Data akun ini akan dihapus permanen">
                                             Hapus
                                         </button>
                                     </form>
